@@ -1,0 +1,5 @@
+SD_GIT=https://github.com/dos1/SuperDerpy
+SD_COMMIT=5f5b6854d4b7049231b106736d1201fc3c048623
+SD_VERSION=0.2
+ALLEGRO_GIT=https://github.com/DalsinAI/amigaallegro
+ALLEGRO_COMMIT=823f17f78511c2ae85b93fd7060cc9fffc47d4af
