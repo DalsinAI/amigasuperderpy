@@ -27,6 +27,10 @@ xiph() { # name url tag commit
         [ "$(git -C "$d" rev-parse HEAD)" = "$4" ] || { echo "$1: not $4" >&2; exit 1; }
     fi
     [ -f "$VP/.$1" ] && return 0
+    if [ "$1" = flac ]; then
+        # FLAC builds microbench unconditionally; not needed for the static codec.
+        sed -i '/add_subdirectory("microbench")/d' "$d/CMakeLists.txt"
+    fi
     CFLAGS_FLAC=""
     [ "$1" = flac ] && CFLAGS_FLAC="-Dfseeko=fseek -Dftello=ftell"
     cmake -S "$d" -B "$WORK/$1-build" -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
