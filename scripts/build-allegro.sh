@@ -37,7 +37,7 @@ xiph() { # name url tag commit
 xiph ogg https://github.com/xiph/ogg.git v1.3.5 e1774cd77f471443541596e09078e78fdc342e4f
 xiph vorbis https://github.com/xiph/vorbis.git v1.3.7 0657aee69dec8508a0011f47f3b69d7538e9d262
 XIPH_EXTRA="-DBUILD_CXXLIBS=OFF -DBUILD_PROGRAMS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DBUILD_DOCS=OFF -DINSTALL_MANPAGES=OFF -DWITH_OGG=ON -DWITH_STACK_PROTECTOR=OFF -DWITH_FORTIFY_SOURCE=OFF -DENABLE_MULTITHREADING=OFF"
-xiph flac https://github.com/xiph/flac.git 1.4.3 28e4f0528c76b296c561e922ba67d43751990599
+XIPH_EXTRA="$XIPH_EXTRA -DCMAKE_C_FLAGS=-Dfseeko=fseek\ -Dftello=ftell" xiph flac https://github.com/xiph/flac.git 1.4.3 28e4f0528c76b296c561e922ba67d43751990599
 XIPH_EXTRA=""
 
 # a build cut off by the stove's time limit goes on where it stopped
