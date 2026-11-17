@@ -27,17 +27,19 @@ xiph() { # name url tag commit
         [ "$(git -C "$d" rev-parse HEAD)" = "$4" ] || { echo "$1: not $4" >&2; exit 1; }
     fi
     [ -f "$VP/.$1" ] && return 0
+    CFLAGS_FLAC=""
+    [ "$1" = flac ] && CFLAGS_FLAC="-Dfseeko=fseek -Dftello=ftell"
     cmake -S "$d" -B "$WORK/$1-build" -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE="$SRC/cmake/Toolchain-amigaos3.cmake" -DAMIGA_STOVE="$STOVE" \
         -DAMIGA_PORT_PREFIX="$VP" -DCMAKE_INSTALL_PREFIX="$VP" -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_SHARED_LIBS=OFF -DINSTALL_DOCS=OFF ${XIPH_EXTRA:-} > "$WORK/$1-cmake.log" 2>&1 || { tail -30 "$WORK/$1-cmake.log" >&2; exit 1; }
+        -DBUILD_SHARED_LIBS=OFF -DINSTALL_DOCS=OFF -DCMAKE_C_FLAGS="$CFLAGS_FLAC" ${XIPH_EXTRA:-} > "$WORK/$1-cmake.log" 2>&1 || { tail -30 "$WORK/$1-cmake.log" >&2; exit 1; }
     cmake --build "$WORK/$1-build" --parallel "${JOBS:-4}" > "$WORK/$1-build.log" 2>&1 || { grep -m20 -A5 error "$WORK/$1-build.log" >&2; exit 1; }
     cmake --install "$WORK/$1-build" > /dev/null; touch "$VP/.$1"
 }
 xiph ogg https://github.com/xiph/ogg.git v1.3.5 e1774cd77f471443541596e09078e78fdc342e4f
 xiph vorbis https://github.com/xiph/vorbis.git v1.3.7 0657aee69dec8508a0011f47f3b69d7538e9d262
 XIPH_EXTRA="-DBUILD_CXXLIBS=OFF -DBUILD_PROGRAMS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DBUILD_DOCS=OFF -DINSTALL_MANPAGES=OFF -DWITH_OGG=ON -DWITH_STACK_PROTECTOR=OFF -DWITH_FORTIFY_SOURCE=OFF -DENABLE_MULTITHREADING=OFF"
-XIPH_EXTRA="$XIPH_EXTRA -DCMAKE_C_FLAGS=-Dfseeko=fseek\ -Dftello=ftell" xiph flac https://github.com/xiph/flac.git 1.4.3 28e4f0528c76b296c561e922ba67d43751990599
+xiph flac https://github.com/xiph/flac.git 1.4.3 28e4f0528c76b296c561e922ba67d43751990599
 XIPH_EXTRA=""
 
 # a build cut off by the stove's time limit goes on where it stopped
